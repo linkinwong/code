@@ -632,8 +632,6 @@ public class Solution {
     	}*/
 
     	public List<String> summaryRanges(int[] nums) {
-
-
                 if(nums == null) return null;
                 List<Integer> node = new ArrayList<>();
                 List<String> result = new ArrayList<>();
