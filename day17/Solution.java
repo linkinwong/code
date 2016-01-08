@@ -24,6 +24,88 @@ public class Solution {
 
   public static void main(String[] args){
     Solution sl = new Solution();
+    String path = "/a/./b/../../c/";
+    String pp = "./b";
+    //sl.simplifyPath(path);
+    System.out.println(sl.strStr(path, pp) );
+  }
+
+  public int strStr(String haystack, String needle) {
+    
+    int len_hay = haystack.length(), len_need = needle.length();
+    if(len_hay<len_need)	return -1;
+    else if(len_need == 0)	return 0;
+    for(int i = 0; i<len_hay; i++){
+      if(haystack.charAt(i)==needle.charAt(0)){
+        if(len_hay-i<len_need)	return	-1;
+        if( needle.equals(haystack.substring(i,i+len_need))){
+          return i;
+        }	
+      }
+    }
+    return -1;
+  }
+
+  public String simplifyPath(String path) {
+    Stack<String> folder = new Stack<String>();
+    String[] spl = path.split("/");
+    String out="";
+    for(String s:spl){
+      if(s.equals(".") )  continue;
+      else  if(s.equals("..")) {
+        if (folder.empty()==true) { 
+          //out = "/"; 
+          //return out;
+        }  else   {folder.pop();}
+      }else {
+        folder.push(s);
+      }
+      System.out.print("  " + s);
+    }
+    System.out.println();
+    while(folder.empty() ==false){
+      String t = folder.pop();
+      if(t.length()>0){
+        out = "/" + t  + out;
+      }
+    }
+    //out = "/" + out; 
+    System.out.println("  " + out);
+    return out;
+  }
+
+  public TreeNode invertTree(TreeNode root) {
+    Stack<TreeNode> save = new Stack<TreeNode>();
+    if (root == null) return null;
+    TreeNode p = root;
+    save.push(p);
+    while(p!=null){
+      p = save.pop();
+      TreeNode temp = p.left;
+      p.left = p.right;
+      p.right = temp;
+      save.push(p.left);
+      save.push(p.right);
+    }
+    return root;
+  }
+/*  public TreeNode invertTree(TreeNode root) {
+    if (root = null) return null;
+    TreeNode temp;
+    temp = root.right;
+    root.right = invertTree(root.left);
+    root.left = invertTree(temp);
+    return root;
+  } */
+
+  public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    TreeNode s = root;
+    while(s!=null){
+      if(s.val>p.val && s.val >q.val) s=s.left;
+      else if (s.val<p.val && s.val <q.val) s=s.right;
+      else  return s;
+    }
+      return null;
   }
 
   // Push element x to the back of queue.
@@ -635,7 +717,7 @@ public class Solution {
     for(int i:nums)	System.out.print("  "+ i);
   }
 
-  public int strStr(String haystack, String needle) {
+  public int strStr1(String haystack, String needle) {
     int len_hay = haystack.length(), len_need = needle.length();
     if(len_hay<len_need)	return -1;
     else if(len_need == 0)	return 0;
