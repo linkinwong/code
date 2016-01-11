@@ -67,8 +67,8 @@ public class Solution {
   }
 
   public int getNum(int n){
-    int i = n;
     Stack<Integer> st = new Stack<Integer>();
+    int i = n;
     int yu;
     do {
       yu = i%10;
