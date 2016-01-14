@@ -7,7 +7,6 @@ public class Solution {
     TreeNode right;
     TreeNode(int x) { val = x;}
   }
-
   public class ListNode {
     int val;
     ListNode next;
@@ -30,17 +29,81 @@ public class Solution {
     input = new Stack<Integer>();
     output = new Stack<Integer>();
     TreeNode p = new TreeNode(1);   root1 = p;
-    p = new TreeNode(2);   root1.left = p;
-    p = new TreeNode(3);   root1.right = p;
-    p = new TreeNode(1);   root2 = p;
-    p = new TreeNode(2);   root2.left = p;
-    p = new TreeNode(3);   root2.right = p;
-    p = new TreeNode(4);   root2.left.right = p;
   }
 
   public static void main(String[] args){
     Solution sl = new Solution();
-    System.out.println(sl.countPrimes(23));
+    System.out.println(sl.hammingWeight(345));
+  }
+
+  public int climbStairs(int n) {
+    int m =2;
+    return 0;
+  }
+
+  public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> out = new LinkedList<List<Integer>>();
+    List<Integer> sub = new LinkedList<Integer>();
+    Arrays.sort(nums);
+    int len = nums.length, n = (int) (Math.pow(2, len)) ;
+    for(int i = 0; i<n; i++){
+      int j = 0, k = i;
+      sub.clear();
+      while(j <len){
+        if ((k & 1) ==1)  sub.add(nums[j]);
+        k = k>>1;
+        j++;
+      }
+      out.add(new LinkedList<Integer>(sub));
+    }
+    return out;
+  }
+
+  public int reverseBits(int n) {
+    int size=32, out = 0, temp=0;
+    while(size-- > 0){
+      temp = (n & 1);
+      out = out + temp;
+      out = out << 1;
+    }
+    return out;
+  }
+
+  public int hammingWeight(int n) {
+    //int[] out = new int[100];
+    //unsigned int nn = (unsigned int) n;
+    int sum = 0, size = 32;
+    while(size-- > 0){
+      sum +=  (n & 1) == 1 ? 1: 0;
+      n /= 2;
+      //i++;
+    }
+    return sum;
+  }
+
+
+  public int titleToNumber(String s) {
+    int out =0;
+    int len = s.length();
+    for(int i = 0; i<len; i++){
+      int temp = (int)( s.charAt(i)) - 64;
+      out += temp * Math.pow(26,len-i-1);
+    }
+    return out;
+  }
+
+  String convertToTitle(int n) {
+    int dividend;
+    String out = "";
+    while(n > 26){
+      int weight = (n-1) % 26;
+      n = (n-1)/26;
+      char c = (char)(weight + 64 +1);
+      out = c + out;
+    } 
+    char c = (char)(n + 64);
+    out = c + out;
+    return out;
   }
 
 /* public List<List<Integer>> pathSum(TreeNode root, int sum) {
@@ -1042,7 +1105,7 @@ public class Solution {
     String sub = s.substring(start_ind,end_ind);
     if(sub.equals( "+") || sub.equals("-"))	return 0;
     Double d = new Double("2.0");
-    double r = d.parseDouble(sub);
+    double r =(Double) d.parseDouble(sub);
     if(r>Integer.MAX_VALUE) return Integer.MAX_VALUE;
     if(r<Integer.MIN_VALUE) return Integer.MIN_VALUE;
     int out= Integer.parseInt(sub);
@@ -1306,8 +1369,8 @@ public class Solution {
 
   public List<String> summaryRanges(int[] nums) {
     if(nums == null) return null;
-    List<Integer> node = new ArrayList<>();
-    List<String> result = new ArrayList<>();
+    List<Integer> node = new ArrayList<Integer>();
+    List<String> result = new ArrayList<String>();
     if(nums.length==0) return result;
     node.add(0);
     int i=0, j=1, k=1;
@@ -1332,7 +1395,7 @@ public class Solution {
   }
   public List<Integer> findMinHeightTrees(int n, int[][] edges) {
     if(n==1) return Collections.singletonList(0);
-    List<Set<Integer>> adj = new ArrayList<>(n); 
+    List<Set<Integer>> adj = new ArrayList<Set<Integer>>(n); 
     for(int i=0; i<n; ++i) adj.add(new HashSet<Integer>() );
     List<Integer> leaves = new ArrayList<Integer>();
     for(int[] edge : edges){
@@ -1346,7 +1409,7 @@ public class Solution {
     }
     while(n >2){
       n = n - leaves.size();
-      List<Integer> new_leaves = new ArrayList<>();
+      List<Integer> new_leaves = new ArrayList<Integer>();
       for(int leave : leaves){
         int j = adj.get(leave).iterator().next();
         adj.get(j).remove(leave);
@@ -1373,7 +1436,7 @@ public class Solution {
     Queue<TreeNode> q = new LinkedList<TreeNode>();
     q.add(root);
     while( q.size()>0) {
-      List<Integer> line = new ArrayList<>();
+      List<Integer> line = new ArrayList<Integer>();
       int size = q.size();
       for(int i=0; i<size; i++) {
         TreeNode node = q.poll();
@@ -1390,7 +1453,7 @@ public class Solution {
   }
   public List<List<Integer>> levelOrder(TreeNode root) {
     // recursion 
-    List<List<Integer>> ll = new ArrayList<>();
+    List<List<Integer>> ll = new ArrayList<List<Integer>>();
     if(root == null) return ll;
     traversal(ll, root, 1);
     for (List<Integer> l : ll){
@@ -1404,7 +1467,7 @@ public class Solution {
   public void traversal(List<List<Integer>> ll, TreeNode node, int depth) {
     if (node == null) return;
     if (ll.size() == depth -1) {
-      List<Integer> l = new ArrayList<>();
+      List<Integer> l = new ArrayList<Integer>();
       l.add(node.val);
       ll.add(l);
     }
@@ -1416,7 +1479,7 @@ public class Solution {
   }
 
   public int minDepth(TreeNode root) {
-    List<Integer> level = new ArrayList<>();
+    List<Integer> level = new ArrayList<Integer>();
     if(root == null) level.add(0);
     traversal_min(level, root, 1);
     int min = Collections.min(level);
