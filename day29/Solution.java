@@ -31,10 +31,59 @@ public class Solution {
     TreeNode p = new TreeNode(1);   root1 = p;
   }
 
-  public static void main(String[] args){
-    Solution sl = new Solution();
-    System.out.println(sl.hammingWeight(345));
-  }
+    public static void main(String[] args){
+        Solution sl = new Solution();
+        System.out.println(sl.hammingWeight(345));
+    }
+
+    public String getHint(String secret, String guess){
+        int len = secret.length();
+        if(len == 0)    return "0A0B";
+        int[] ms = new int[256];
+        int[] mg = new int[256];
+        int bull=0, cow=0;
+        for(int i=0; i<len; i++){
+            char cs = secret.charAt(i);
+            char cg = guess.charAt(i);
+            if(mg[cg]==0)  mg[cg] = (int) cg;
+            if(ms[cs]==0)  ms[cs] = (int) cs;  
+            if(mg[cg] == ms[cs]&& ms[cs]!=0)    bull++;
+            else if (mg[cs] != 0 || ms[cg] !=0 )    cow++;    
+        }
+        String out = bull+"A"+cow+"B";
+        return out;
+    }
+
+
+    public boolean isValidSudoku(char[][] board){
+        int len = board.length;
+        if(len!=9 || len != board[0].length) return false;
+        for(int i = 0; i<len; i++){
+            int[] m = new int[256];
+            for(int j=0; j<len;j++){
+                if(board[i][j]== '.' )  continue;
+                if( m[ board[i][j] ] !=0) return false;
+                else    m[board[i][j]] = (int) board[i][j]; 
+            }
+        }
+        for(int i = 0; i<len; i++){
+            int[] m = new int[256];
+            for(int j=0; j<len;j++){
+                if(board[j][i]== '.' )  continue;
+                if( m[ board[j][i] ] !=0) return false;
+                else    m[board[j][i]] = (int) board[j][i]; 
+            }
+        }
+        for(int j = 0; j<len; j++){
+            int[] m = new int[256];
+            for(int i=0; i<len;i++){
+                if( board[i%3+j/3*3][i/3+ j%3*3] =='.') continue;
+                if( m[ board[i%3+j/3*3][i/3+ j%3*3] ] !=0) return false;
+                else    m[board[i%3+j/3*3][i/3+ j%3*3]] = (int) board[i%3+j/3*3][i/3+ j%3*3]; 
+            }
+        }
+        return true;
+    }
 
   public boolean isIsomorphic(String s, String t) {
     HashMap<Character, Integer> ms = new HashMap<Character, Integer>();
