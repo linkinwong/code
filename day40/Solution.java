@@ -28,12 +28,234 @@ public class Solution {
   public Solution(){
     input = new Stack<Integer>();
     output = new Stack<Integer>();
-    TreeNode p = new TreeNode(1);   root1 = p;
+    TreeNode p = new TreeNode(1);   root = p;
+    p = new TreeNode(2);   root.left = p;
+    p = new TreeNode(3);   root.right = p;
+    p = new TreeNode(5);   root.left.right = p;
+    root.left.left = null;   root.right.left = null;
+    root.right.right = null;
+    root.left.right.right = null;
+    root.left.right.left = null;
   }
 
     public static void main(String[] args){
         Solution sl = new Solution();
-        //System.out.println(sl.hammingWeight(345));
+        List<String> out =  sl.binaryTreePaths(sl.root);
+        //System.out.println(sl.wordPattern("abba","dog cat cat dog"));
+        System.out.print(out);
+    }
+
+    public String fractionToDecimal(int numerator, int denominator) {
+
+        int den = denominator, num = numerator;
+        if(num==0)    return "0";
+        StringBuilder res = new StringBuilder();
+        res.append( ( num<0 ^ den<0) ? "-" :""  );
+        long n = Math.abs((long)num);
+        long d =  Math.abs((long)denominator);
+        long dd =  Math.abs(denominator);
+
+        //System.out.print(d + " and " + dd);
+        res.append( n/d );
+        n = n%d;
+        if(n==0)    return res.toString();
+        res.append(".");
+        HashMap<Long,Integer> m = new HashMap<Long, Integer>();
+
+        //System.out.print(n + "and" + d);
+        m.put(n, res.length());
+        while(n!=0){
+            n = n *10;
+            long temp = n/d;
+            res.append(temp);
+            n = n%d;
+            if(m.containsKey(n)){
+                int ind = m.get(n);
+                res.insert(ind,"(");
+                res.append(")");
+                //System.out.print(res.toString());
+                break;
+            }
+            else{
+                m.put(n, res.length());
+            }
+        }
+        return res.toString();
+    }
+
+    public ListNode detectCycle(ListNode head) {
+        ListNode fast=head, slow=head;
+        ListNode third=head, fourth=head;
+        boolean  is_circle = false;
+        while(fast!=null && fast.next!=null){
+            if(fast==slow){  
+                is_circle = true;
+                break;
+            }
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        if (is_circle == false) return null;
+        slow = slow.next;
+        third = third.next;
+        while(slow != fast){
+            slow = slow.next;
+            third = third.next;
+        }
+        while(fourth != third){
+            fourth = fourth.next;
+            third = third.next;
+        }
+        return fourth;
+    }
+
+
+    public String removeDuplicateLetters(String s) {
+//        char[] ss = s.toCharArray();
+//        int[] out = new char[26];
+//        Stack<Integer> [] st = new Stack<Integer>[26];
+//        for(int i=0; i< ss.length; i++){
+//            if(out[ss[i] - 'a'] == 0){
+//                out[ss[i] - 'a'] == i+1;
+//                st[ss[i] - 'a'].push(i);
+//            }else {
+//                st[ss[i] - 'a'].push(i);
+//            }
+//        }
+//
+//        int num_no0 = 0;
+//        for(int j=0; j<26; j++){
+//            if( out[j] !=0) num_no0++;
+//        }
+//        int[] abc = new abc[num_no0];
+//        int i=0;
+//        for(int j=0; j<26; j++){
+//            if( out[j] !=0){ 
+//                abc[i] = j;
+//                i++;
+//            }
+//        }
+//
+//        int[] ans = new int[num_no0];
+//
+//        for(int i=0; i<num_no0; i++){
+//            int min_i = Integer.MAX_VALUE;
+//            for(int j=0; j<num_no0; j++)
+//            {
+//                if( out[ abc[i] ] -1 > st[ abc[j] ].peek()  ){
+//                    
+//                }
+//            }
+
+    return "OK";
+
+    }
+
+    public int nthSuperUglyNumber(int n, int[] primes){
+        int len = primes.length;
+        if(primes[0] == 1){
+            len = len -1;
+        }
+        int[] p = new int[len];
+        if(primes[0] !=1){
+            p = primes;
+        }else{
+            for(int i=0; i< len; i++){
+                p[i] = primes[i+1];
+            }
+        }
+        if(n ==1) return n; 
+        int[] ind = new int[len];
+        int[] ug = new int[n+1];
+        ug[1] = 1;
+        for(int j=0; j<len; j++){
+            ind[j] = 1;
+        }
+        
+        for(int i = 2; i<=n; i++){
+            int min = Integer.MAX_VALUE;
+            for(int j = 0; j< len; j++){
+                if(min> ug[ind[j]] * p[j] ) min = ug[ind[j]] * p[j];
+            }
+            for(int j = 0; j< len; j++){
+                if(min == ug[ind[j]] * p[j] ) ind[j]++;
+            }
+        }
+       return ug[n]; 
+
+    }
+
+
+    public int nthUglyNumber(int n) {
+        if (n<3)   return n;
+        int[] ugly = new int[n+1];
+        ugly[1] = 1; ugly[2] = 2;
+        int i2 = 2, i3=1, i5=1;
+        for(int i = 3; i<=n; i++){
+            int temp = Math.min( ugly[i2]*2, ugly[i3] *3   );
+            ugly[i] = Math.min(temp, ugly[i5]*5 );
+            if(ugly[i] == ugly[i2] *2)  i2++;
+            if(ugly[i] == ugly[i3] *3)  i3++;
+            if(ugly[i] == ugly[i5] *5)  i5++;
+        }
+        return ugly[n];
+    }
+
+
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> out = new ArrayList<String>();
+        if(root == null)   return out;
+        String path = ""  ;
+        boolean is_root= true;
+        binaryTreePaths(root, out,path, is_root );
+        return out;
+    }
+    public void binaryTreePaths(TreeNode p , List<String> ls, String path, boolean is_root ){
+        if(p==null) { 
+            return;
+        }
+        if(p.left==null && p.right ==null){
+            if(is_root){ 
+                path = "" + p.val;
+                is_root = false;
+            }else path = path + "->" + p.val;
+            ls.add(new String(path));
+            return; 
+        }
+        if(is_root){ 
+            path = "" + p.val;
+            is_root = false;
+        }
+        else{
+            path = path + "->" + p.val;
+        }
+        binaryTreePaths(p.left, ls, path, is_root);
+        binaryTreePaths(p.right, ls, path, is_root);
+    }
+        
+
+    public boolean wordPattern(String pattern, String str) {
+        HashMap<String, Integer> word_m = new HashMap<String, Integer>();
+        char[] pat = pattern.toCharArray();
+        int[] pat_dic = new int[256];
+        String[] parts =  str.split(" ");
+        for(int i=0; i<pat.length; i++){
+            if(pat_dic[pat[i]] == 0){
+                pat_dic[pat[i]] = i+1;
+                if(word_m.containsKey(parts[i]))    return false;
+                else    word_m.put(parts[i], i+1);
+            }
+            else{
+                //if(!word_m.containsKey(parts[i])
+                if(word_m.get(parts[i]) != pat_dic[pat[i]] )    return false;
+            }
+        }
+        return true;
+    }
+
+
+   /* public static void main(String[] args){
+        Solution sl = new Solution();
         Scanner scan = new Scanner(System.in);
         Random rand = new Random();
         int secret = 0;
@@ -41,10 +263,6 @@ public class Solution {
             secret = secret*10 +  (rand.nextInt(9)+1);
         }
         String secret_str = ""+secret;
-        //System.out.println("the secret num is string" + secret_str);
-        //scan.useDelimiter("\\n");
-        //int num = scan.nextInt();
-        //scan.nextLine();
         int num = 9999;
         while(num != -1){
             num = scan.nextInt();
@@ -55,8 +273,8 @@ public class Solution {
                 System.out.println("Bingo! you are really smart! Bye bye");
                 return;
             }else System.out.println("You are near there! the gap is -->  " + result);
-        }
-    }
+        }  
+    } */
 
     public String getHint(String secret, String guess){
 
