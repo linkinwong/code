@@ -38,6 +38,21 @@ public class Solution {
     root.left.right.left = null;
   }
 
+    public static void main(String[] args){
+        Solution sl = new Solution();
+        char[][] board = 
+        {
+          {'o','a','a','n'},
+          {'e','t','a','e'},
+          {'i','h','k','r'},
+          {'i','f','l','v'}
+        };
+        String[] words = {"rain", "pea", "eat", "oath"};
+        List<String> p = sl.findWords(board,words);
+        for(String s: p){
+          System.out.println( s );
+        }
+    }
 
     class TrieNode {
         // Initialize your data structure here.
@@ -51,7 +66,6 @@ public class Solution {
             children = new TrieNode[NUM];
             this.val = ' ';
             isWord = false;
-            truePath = true;
         }
         public TrieNode(char c){
             this();
@@ -86,10 +100,9 @@ public class Solution {
         // Returns if the word is in the trie.
         public boolean search(String word) {
             TrieNode tn = root;
-            root.truePath = true;
             char[] w = word.toCharArray();
             for(char c: w){
-                if(tn.children[c-'a'] == null || tn.truePath == false  ) return false;
+                if(tn.children[c-'a'] == null  ) return false;
                 tn  = tn.children[c-'a'];
             }
             if(! tn.isWord) return false;
@@ -108,20 +121,10 @@ public class Solution {
             return true;
         }
 
-        public void markFalsePath(String word) {
-            TrieNode tn = root;
-            char[] w = word.toCharArray();
-            for(char c: w){
-                if(tn.children[c-'a'] == null ) return;
-                tn  = tn.children[c-'a'];
-                tn.truePath = false;
-            }
-            return ;
-        }
     }
 
     public List<String> findWords(char[][] board, String[] words) {
-        if(board.length<=0 )    return false;
+        if(board.length<=0 )    return null;
         boolean[][] path = new boolean[board.length][board[0].length]; 
         List<String> out = new ArrayList<String>();
         int len = words.length;
@@ -130,57 +133,44 @@ public class Solution {
             trie.insert(s);
         }
         
-        StringBuilder snake = new StringBuilder();
         for(int i=0; i<board.length; i++){
             for(int j=0; j<board[i].length;j++){
-
-                if(exist_search(board,trie, i, j, snake, 0)) return true;
-                for(int u=0; u<board)
-            }
-        }
-
-        for(String s: words){
-            if(trie.search(s) ){
-                out.add(s);
-            }else {
-                if(! exist (board, s) ) {
-                    trie.markFalsePath(s);
+                for(int u=0; u<path.length; u++){
+                    for(int v=0; v<path[i].length; v++){
+                        path[u][v] = false;
+                    }
                 }
+                StringBuilder snake = new StringBuilder();
+                exist_search(out, board,trie,path, i, j, snake);
             }
         }
 
         return out;
     }
 
-    public void exist_search(char[][] board, Trie trie, int i, int j, StringBuilder word, int k) {
+    public boolean exist_search(List<String> out, char[][] board, Trie trie, boolean[][] path, int i, int j, StringBuilder word) {
+        if(i<0 || j<0 || i>=board.length || j>=board[0].length) return false;
         word.append( board[i][j] );
-        if( !trie.startsWith(word)  )   return;
-        if(k<=word.length())    return true;
-        if(i<0 || j<0 || i>=board.length || j>=board[0].length) return;
-        if(board[i][j] != word.charAt(k) ) return false;
-        char t = board[i][j];
-        board[i][j] = '#';
-        boolean ex = exist(board, i-1, j, word, k+1) || exist(board, i+1, j, word, k+1) || 
-                exist(board, i, j+1, word, k+1) ||exist(board, i, j-1, word, k+1); 
-        board[i][j] = t;
+        String snake = word.toString();
+        //System.out.println("snake = " + snake);
+        if( !trie.startsWith(snake)  ) {  
+            word.deleteCharAt( word.length() -1 );
+            return false;
+        }
+        if(path[i][j] ){ 
+            word.deleteCharAt( word.length() -1 );
+            return false;
+        }
+        if(trie.search(snake))    out.add(snake);
+        path[i][j] = true;
+        boolean ex = exist_search(out, board, trie, path,  i-1, j, word) || 
+                    exist_search(out, board, trie, path,  i+1, j, word) || 
+                    exist_search(out, board, trie, path,  i, j+1, word)  || 
+                    exist_search(out, board, trie, path,  i, j-1, word); 
+        path[i][j] = false;
         return ex;
     }
 
-    public static void main(String[] args){
-        Solution sl = new Solution();
-        List<String> out =  sl.binaryTreePaths(sl.root);
-        sl.callTrie();
-    }
-
-    public void callTrie(){
-        Trie trie = new Trie();
-        trie.insert("some");
-        System.out.print( trie.search("some"));
-    }
-    // Your Trie object will be instantiated and called as such:
-    // Trie trie = new Trie();
-    // trie.insert("somestring");
-    // trie.search("key");
 
     public boolean exist(char[][] board, String word) {
         if(board.length<=0 )    return false;
