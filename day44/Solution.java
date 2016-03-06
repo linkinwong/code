@@ -148,27 +148,39 @@ public class Solution {
         return out;
     }
 
+
     public boolean exist_search(List<String> out, char[][] board, Trie trie, boolean[][] path, int i, int j, StringBuilder word) {
-        if(i<0 || j<0 || i>=board.length || j>=board[0].length) return false;
+        if(i<0 || j<0 || i>=board.length || j>=board[0].length) {
+            return false;
+        }
+
         word.append( board[i][j] );
         String snake = word.toString();
-        //System.out.println("snake = " + snake);
-        if( !trie.startsWith(snake)  ) {  
+        if( !trie.startsWith(snake)  ) {
             word.deleteCharAt( word.length() -1 );
             return false;
         }
-        if(path[i][j] ){ 
+
+        if(path[i][j] ){
             word.deleteCharAt( word.length() -1 );
             return false;
         }
-        if(trie.search(snake))    out.add(snake);
         path[i][j] = true;
-        boolean ex = exist_search(out, board, trie, path,  i-1, j, word) || 
-                    exist_search(out, board, trie, path,  i+1, j, word) || 
-                    exist_search(out, board, trie, path,  i, j+1, word)  || 
-                    exist_search(out, board, trie, path,  i, j-1, word); 
+
+        if(trie.search(snake)) {
+            if(!out.contains(snake)){
+                out.add(snake);
+            }
+        }
+
+        exist_search(out, board, trie, path,  i-1, j, word);
+        exist_search(out, board, trie, path,  i+1, j, word);
+        exist_search(out, board, trie, path,  i, j+1, word) ;
+        exist_search(out, board, trie, path,  i, j-1, word);
         path[i][j] = false;
-        return ex;
+
+        word.deleteCharAt( word.length() -1 );
+        return false;
     }
 
 
