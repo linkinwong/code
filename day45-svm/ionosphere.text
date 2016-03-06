@@ -1,0 +1,5 @@
+Reading model...OK. (137 support vectors read)
+Classifying test examples..100..done
+Runtime (without IO) in cpu-seconds: 0.01
+Accuracy on test set: 94.06% (95 correct, 6 incorrect, 101 total)
+Precision/recall on test set: 93.94%/96.88%
