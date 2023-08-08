@@ -31,8 +31,10 @@ find "$directory" -name '*.pdf' -exec bash -c '
         # 如果所有的文本都在给定的文本中，返回0
         return 0
     }
-    pdftotext "$1" - | search_texts "${@:2}" && echo "$1" && pdftotext "$1" - | grep -iHn "${@:2}"
+    pdftotext "$1" - | search_texts "${@:2}" && echo "$1" && 
+    pdftotext "$1" - | grep -iHn --color "${@:2}"
 ' bash {} "${texts[@]}" \;
+
 
 # 在所有.ppt、.pptx PowerPoint文档中搜索文本，不区分大小写
 # 这部分的代码和上面的代码类似，只是使用了一个Python脚本（python_pptx_2_txt.py）来处理.ppt和.pptx文件
@@ -51,3 +53,22 @@ find "$directory" -name '*.ppt' -o -name '*.pptx' -exec bash -c '
     python /Users/linlin/PycharmProjects/code/test-copilot/python_pptx_2_txt.py "$1" - | search_texts "${@:2}" && echo "$1" && 
     python /Users/linlin/PycharmProjects/code/test-copilot/python_pptx_2_txt.py "$1" - | grep -iHn "${@:2}"
 ' bash {} "${texts[@]}" \;
+
+
+# # 在所有.doc、.docx 文档中搜索文本，不区分大小写
+# # 这部分的代码和上面的代码类似，只是使用了一个Python脚本（python_pptx_2_txt.py）来处理.ppt和.pptx文件
+# find "$directory" -name '*.doc' -o -name '*.docx' -exec bash -c '
+#     search_texts() {
+#         local text
+#         for text in "${@:2}"; do
+#             # 如果文本不在给定的文本中，返回1
+#             if ! grep -qi "$text"; then
+#                 return 1
+#             fi
+#         done
+#         # 如果所有的文本都在给定的文本中，返回0
+#         return 0
+#     }
+#     antiword "$1" - | search_texts "${@:2}" && echo "$1" && 
+#     antiword "$1" - | grep -iHn "${@:2}"
+# ' bash {} "${texts[@]}" \;
